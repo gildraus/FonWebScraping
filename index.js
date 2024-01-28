@@ -36,7 +36,7 @@ class Course {
 
 var $ = null;
 var courses = [];
-var id_counter = 1;
+var id_counter = 339;
 
 async function getPageHTML(url) {
   try {
@@ -109,7 +109,7 @@ async function populateCourse(course, url) {
 
 async function getCourses() {
   await getPageHTML(
-    "https://oas.fon.bg.ac.rs/informacioni-sistemi-i-tehnologije/informacione-tehnologije/"
+    "https://oas.fon.bg.ac.rs/menadzment-i-organizacija/projektni-menadzment/"
   );
 
   var i = 0;
