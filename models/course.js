@@ -1,0 +1,32 @@
+
+const Course = {
+  course_id: '',
+  accreditation: '',
+  name: '',
+  semester: '',
+  level_of_study: '',
+  studies: [],
+  modules: [],
+  departments: [],
+  year_of_study: [],
+  lecturers: [],
+  espb: '',
+  periodicity: '',
+  type_of_exam: '',
+  type_of_lecture: '',
+  preconditions: [],
+  lecture_session_time: [],
+  exercise_session_time: [],
+  abstract: '',
+  objective: '',
+  content: '',
+  literature: [],
+  link: '',
+  video: '',
+  tags: [],
+  note: '',
+  restrictions: [],
+  status: '',
+};
+
+module.exports = Course;
