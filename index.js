@@ -113,152 +113,7 @@ async function populateCourse(course, url) {
 
   return course;
 }
-/*
 
-Sure, you can modify your script to fetch data from multiple links and keep counting the id_counter across all fetched courses. You can achieve this by creating an array of URLs and then iterating through them in the getCourses function. Here's an example:
-
-javascript
-Copy code
-const axios = require("axios");
-const cheerio = require("cheerio");
-const fs = require("fs");
-
-// ... (Course class and other code)
-
-const urls = [
-  "https://oas.fon.bg.ac.rs/informacioni-sistemi-i-tehnologije/informacione-tehnologije/",
-  "https://oas.fon.bg.ac.rs/informacioni-sistemi-i-tehnologije/informacioni-sistemi/",
-  "https://oas.fon.bg.ac.rs/informacioni-sistemi-i-tehnologije/informaciono-inzenjerstvo/"
-];
-
-var $ = null;
-var courses = [];
-var id_counter = 1; // Initialize id_counter here
-
-async function getPageHTML(url) {
-  // ... (existing code)
-}
-
-// ... (populateCourse and logCourses functions)
-
-async function getCourses() {
-  for (const url of urls) {
-    await getPageHTML(url);
-
-    // ... (existing code)
-
-    // Remove the last 3 entries from the courses array
-    courses = courses.slice(0, -3);
-
-    for (var i = 0; i < courses.length; i++) {
-      courses[i] = await populateCourse(courses[i], courses[i].link);
-      courses[i].course_id = "ОАС-" + id_counter; // Update course_id with the global id_counter
-      id_counter++; // Increment id_counter for the next course
-    }
-  }
-
-
-  async function getCourses() {
-  var i = 0;
-  var program = undefined;
-  var id_counter = 1; // Initialize id_counter here, before the loop
-
-  for (const url of urls) {
-    await getPageHTML(url);
-
-    if ($(".page-title").length > 0) {
-      program = $(".page-title").first().text();
-    }
-
-    $(".row-hover tr").each((_index, element) => {
-      const $row = $(element);
-      const $column2 = $row.find(".column-2");
-
-      var new_course = new Course();
-      var semester = undefined;
-      var year_of_study = undefined;
-
-      if ($column2.length > 0) {
-        const href = $column2.find("a").attr("href");
-        const column2Content = $column2.text();
-        const $column3 = $row.find(".column-3");
-        const $column4 = $row.find(".column-4");
-
-        if ($column3.length > 0 && $column3.text().length > 0) {
-          if (
-            $row.parent().parent().find("thead tr .column-3").text() == "I СЕМ"
-          ) {
-            semester = "први";
-            year_of_study = "прва";
-          } else if (
-            $row.parent().parent().find("thead tr .column-3").text() ==
-            "III СЕМ"
-          ) {
-            semester = "трећи";
-            year_of_study = "друга";
-          } else if (
-            $row.parent().parent().find("thead tr .column-3").text() == "V СЕМ"
-          ) {
-            semester = "пети";
-            year_of_study = "трећа";
-          } else if (
-            $row.parent().parent().find("thead tr .column-3").text() ==
-            "VII СЕМ"
-          ) {
-            semester = "седми";
-            year_of_study = "четврта";
-          }
-        } else if ($column4.length > 0 && $column4.text().length > 0) {
-          if (
-            $row.parent().parent().find("thead tr .column-4").text() == "II СЕМ"
-          ) {
-            semester = "други";
-            year_of_study = "прва";
-          } else if (
-            $row.parent().parent().find("thead tr .column-4").text() == "IV СЕМ"
-          ) {
-            semester = "четврти";
-            year_of_study = "друга";
-          } else if (
-            $row.parent().parent().find("thead tr .column-4").text() == "VI СЕМ"
-          ) {
-            semester = "шести";
-            year_of_study = "трећа";
-          } else if (
-            $row.parent().parent().find("thead tr .column-4").text() ==
-            "VIII СЕМ"
-          ) {
-            semester = "осми";
-            year_of_study = "четврта";
-          }
-        }
-        new_course.course_id = "ОАС-" + id_counter;
-        new_course.name = column2Content;
-        new_course.link = href;
-        new_course.semester = semester;
-        new_course.year_of_study = year_of_study;
-        new_course.program = program.split(", ");
-        new_course.level_of_study = "Основне академске студије";
-        new_course.video = "RhlEKDq0HEg";
-        new_course.lecturers = ["Петар Петровић", "Марко Марковић"];
-        new_course.lecture_session_times = ["ПОН 015 08:15", "УТО 310 10:15"];
-        new_course.exercise_session_times = ["СРЕ 015 08:15", "ЧЕТ 310 10:15"];
-
-        courses.push(new_course);
-        id_counter++;
-      }
-    });
-
-    courses = courses.slice(0, -3);
-    for (var i = 0; i < courses.length; i++) {
-      courses[i] = await populateCourse(courses[i], courses[i].link);
-    }
-  }
-
-  logCourses();
-  console.log(courses.length + " courses...");
-}
-*/
 async function getCourses() {
   var i = 0;
   var program = undefined;
@@ -345,7 +200,11 @@ async function getCourses() {
         new_course.lecture_session_times = ["ПОН 015 08:15", "УТО 310 10:15"];
         new_course.exercise_session_times = ["СРЕ 015 08:15", "ЧЕТ 310 10:15"];
         //proverava da li je izborni jer ako jeste nece da ga doda
-        if (!new_course.name.startsWith("Изборни")) {
+        if (
+          !new_course.name.startsWith("Изборни") &&
+          !new_course.name.startsWith(" Изборни") &&
+          !new_course.name.startsWith(")Изборни")
+        ) {
           courses.push(new_course);
           id_counter++;
         }
