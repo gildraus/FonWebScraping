@@ -33,6 +33,25 @@ class Course {
   restrictions;
   status;
 }
+
+//
+const isitUrls = [
+  "https://oas.fon.bg.ac.rs/informacioni-sistemi-i-tehnologije/informacione-tehnologije/",
+  "https://oas.fon.bg.ac.rs/informacioni-sistemi-i-tehnologije/informacioni-sistemi/",
+  "https://oas.fon.bg.ac.rs/informacioni-sistemi-i-tehnologije/informaciono-inzenjerstvo/",
+  "https://oas.fon.bg.ac.rs/informacioni-sistemi-i-tehnologije/poslovna-analitika/",
+  "https://oas.fon.bg.ac.rs/informacioni-sistemi-i-tehnologije/softversko-inzenjerstvo/",
+  "https://oas.fon.bg.ac.rs/informacioni-sistemi-i-tehnologije/tehnologije-elektronskog-poslovanja/",
+];
+const menUrls = [
+  "https://oas.fon.bg.ac.rs/menadzment-i-organizacija/finansijski-menadzment/",
+  "https://oas.fon.bg.ac.rs/menadzment-i-organizacija/lin-organizacija-poslovanja/",
+  "https://oas.fon.bg.ac.rs/menadzment-i-organizacija/marketing-menadzment-i-komunikacije/",
+  "https://oas.fon.bg.ac.rs/menadzment-i-organizacija/menadzment-kvaliteta-i-standardizacija/",
+  "https://oas.fon.bg.ac.rs/menadzment-i-organizacija/operacioni-menadzment/",
+  "https://oas.fon.bg.ac.rs/menadzment-i-organizacija/projektni-menadzment/",
+];
+
 const urls = [
   "https://oas.fon.bg.ac.rs/informacioni-sistemi-i-tehnologije/informacione-tehnologije/",
   "https://oas.fon.bg.ac.rs/informacioni-sistemi-i-tehnologije/informacioni-sistemi/",
@@ -40,6 +59,12 @@ const urls = [
   "https://oas.fon.bg.ac.rs/informacioni-sistemi-i-tehnologije/poslovna-analitika/",
   "https://oas.fon.bg.ac.rs/informacioni-sistemi-i-tehnologije/softversko-inzenjerstvo/",
   "https://oas.fon.bg.ac.rs/informacioni-sistemi-i-tehnologije/tehnologije-elektronskog-poslovanja/",
+  "https://oas.fon.bg.ac.rs/menadzment-i-organizacija/finansijski-menadzment/",
+  "https://oas.fon.bg.ac.rs/menadzment-i-organizacija/lin-organizacija-poslovanja/",
+  "https://oas.fon.bg.ac.rs/menadzment-i-organizacija/marketing-menadzment-i-komunikacije/",
+  "https://oas.fon.bg.ac.rs/menadzment-i-organizacija/menadzment-kvaliteta-i-standardizacija/",
+  "https://oas.fon.bg.ac.rs/menadzment-i-organizacija/operacioni-menadzment/",
+  "https://oas.fon.bg.ac.rs/menadzment-i-organizacija/projektni-menadzment/",
 ];
 var $ = null;
 var courses = [];
@@ -85,7 +110,6 @@ async function populateCourse(course, url) {
 
     const $course = cheerio.load(html);
     const $courseContent = $course("tbody");
-    course.modules = $courseContent.find(".row-2 .column-2").text().split(", ");
     course.status = $courseContent.find(".row-3 .column-2").text();
     course.departments = $courseContent
       .find(".row-4 .column-2 a")
@@ -116,14 +140,14 @@ async function populateCourse(course, url) {
 
 async function getCourses() {
   var i = 0;
-  var program = undefined;
+  var module = undefined;
   var id_counter = 1; // Initialize id_counter here, before the loop
 
   for (const url of urls) {
     await getPageHTML(url);
 
     if ($(".page-title").length > 0) {
-      program = $(".page-title").first().text();
+      module = $(".page-title").first().text();
     }
 
     $(".row-hover tr").each((_index, element) => {
@@ -193,7 +217,13 @@ async function getCourses() {
         new_course.link = href;
         new_course.semester = semester;
         new_course.year_of_study = year_of_study;
-        new_course.program = program.split(", ");
+        new_course.program = "placeholder";
+        if (isitUrls.includes(url)) {
+          new_course.program = "Информациони системи и технологије";
+        } else if (menUrls.includes(url)) {
+          new_course.program = "Менаџмент и организација";
+        }
+        new_course.modules = module.split(", ");
         new_course.level_of_study = "Основне академске студије";
         new_course.video = "RhlEKDq0HEg";
         new_course.lecturers = ["Петар Петровић", "Марко Марковић"];
@@ -211,6 +241,7 @@ async function getCourses() {
       }
     });
 
+    //saljem
     courses = courses.slice(0, -3);
     for (var i = 0; i < courses.length; i++) {
       courses[i] = await populateCourse(courses[i], courses[i].link);
