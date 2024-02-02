@@ -6,7 +6,6 @@ const fs = require("fs");
 
 class Course {
   course_id;
-  accreditation;
   name;
   semester;
   level_of_study;
@@ -16,21 +15,13 @@ class Course {
   year_of_study;
   lecturers;
   espb;
-  periodicity;
-  type_of_exam;
-  type_of_lecture;
-  preconditions;
   lecture_session_time;
   exercise_session_time;
-  abstract;
   description;
-  content;
   literature;
   link;
   video;
   tags;
-  note;
-  restrictions;
   status;
 }
 
@@ -124,7 +115,7 @@ async function populateCourse(course, url) {
       } else if (index == 1) {
         // ??? sta je ishod
       } else if (index == 2) {
-        course.note = text;
+        // course.note = text;
       } else if (index == 3) {
         course.content = text;
       } else if (index == 4) {
